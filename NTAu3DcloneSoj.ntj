@@ -1,0 +1,70 @@
+Include("libs/common/NTAu3Extension.ntl")
+
+function NTMain()
+{
+	RegisterEvent(EVENT_GAMEMSG, NTMessages);
+	while( me.ingame )
+	{
+		NTC_Delay(1000);
+	}
+}
+
+function NTMessages(msg, type)
+{
+	var ip, realm, realrealm;
+	switch(type)
+	{
+		case 4:
+			if(msg.indexOf(GetLocaleString(11005)) != -1) // dclone spawn
+			{
+				ip = me.gameserverip;
+				realm = me.gatewayid;
+				switch(realm)
+				{
+					case 0:
+						realrealm = 'USWest';
+						break;
+					case 1:
+						realrealm = 'USEast';
+						break;
+					case 2:
+						realrealm = 'Asia';
+						break;
+					case 3:
+						realrealm = 'Europe';
+						break;
+					default:
+						realrealm = 'unknown';
+						break;
+				}
+				NTAU_SendDclone( ip, realrealm );
+			}
+			if(msg.indexOf(GetLocaleString(11004).substr(3)) != -1) // sojs sold
+			{
+				ip = me.gameserverip;
+				realm = me.gatewayid;
+				switch(realm)
+				{
+					case 0:
+						realrealm = 'USWest';
+						break;
+					case 1:
+						realrealm = 'USEast';
+						break;
+					case 2:
+						realrealm = 'Asia';
+						break;
+					case 3:
+						realrealm = 'Europe';
+						break;
+					default:
+						realrealm = 'unknown';
+						break;
+				}
+				NTAU_SendSoj( ip, realrealm );
+			}
+			break;
+		default:
+			break;
+	}
+}

@@ -1,0 +1,143 @@
+//=======================\\  - See "NTAu3Extension.au3" for more information
+// D2NT AutoIt Extension //  - Original concept by CamelZero
+//=======================\\  - Last Updated: 5/31/13
+
+const NTAU_TITLE = "ETAL Connection Wizard"; //Title of the AutoIt window to communicate with
+
+//DWDATA Constants
+const NTAU_LEFT = 0; //Left-click
+const NTAU_RIGHT = 1; //Right-click
+const NTAU_KEYS = 9; //Send Keys
+const NTAU_RUN = 11; //Run ETAL Profile
+const NTAU_STOP = 12; //Stop ETAL Profile
+const NTAU_MKDIR = 21;
+const NTAU_GAMETITLE = 25;
+const NTAU_MOVE_WINDOW = 30;
+const NTAU_ANCHOR_WINDOW = 31;
+const NTAU_DCLONE = 70;
+const NTAU_SOJSOLD = 71;
+const NTAU_SENDERROR = 98;
+const NTAU_DEBUG = 99;
+
+const NTAU_WINDOW_ANCHORS = {
+	"center": 0,
+	"top": 1,
+	"top-right": 2,
+	"right": 3,
+	"bottom-right": 4,
+	"bottom": 5,
+	"bottom-left": 6,
+	"left": 7,
+	"top-left": 8
+};
+
+function NTAU_Probe()
+{
+	var successful = SendCopyData("AutoIt v3 GUI", NTAU_TITLE, -1, -1);
+	if(successful)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+function NTAU_Click(which, x, y) {
+	if (arguments.length == 2) {
+		y = x;
+		x = which;
+		which = NTAU_LEFT;
+	} else if (which != NTAU_LEFT && which != NTAU_RIGHT) {
+		which = NTAU_LEFT;
+	}
+	return NTAU_SendToAu3ext(which, "" + x + "," + y);
+}
+
+function NTAU_Send(keys) {
+	return NTAU_SendToAu3ext(NTAU_KEYS, keys);
+}
+
+function NTAU_SendToAu3ext(dwData, content) {
+	var successful = SendCopyData("AutoIt v3 GUI", NTAU_TITLE, dwData, me.account + ":" + content);
+	if (!successful) {
+		MG_LogToOOG(NTC_LOG_COMMON, C_RED + "Unable to send data to the AutoIt Extension. Make sure it's running.");
+	}
+	return successful;
+}
+
+function NTAU_RunETALProfile(profile) {
+	NTAU_SendToAu3ext(NTAU_RUN, profile);
+}
+
+function NTAU_StopETALProfile(profile) {
+	NTAU_SendToAu3ext(NTAU_STOP, profile);
+}
+
+function NTAU_MakeDir(path) {
+	NTAU_SendToAu3ext(NTAU_MKDIR, path);
+}
+
+function NTAU_SendError(content)
+{
+	var sent = SendCopyData("AutoIt v3 GUI", NTAU_TITLE, NTAU_SENDERROR, content);
+	if( !sent )
+	{
+		DebugInOOG("NTAU_SendError() failed.");
+	}
+	return sent;
+}
+
+function NTAU_SendDebug(msg)
+{
+	if(Debug)
+	{
+		var sent = SendCopyData("AutoIt v3 GUI", NTAU_TITLE, NTAU_DEBUG, msg);
+		if( !sent )
+		{
+			DebugInOOG("NTAU_SendDebug() failed.");
+		}
+		return sent;
+	}
+}
+
+function NTAU_SendDclone(ip, realm)
+{
+	var sent = SendCopyData("AutoIt v3 GUI", NTAU_TITLE, NTAU_DCLONE, realm + "|" + ip);
+	if( !sent )
+	{
+		DebugInOOG("NTAU_SendDclone() failed.");
+	}
+	return sent;
+}
+
+function NTAU_SendSoj(ip, realm)
+{
+	var sent = SendCopyData("AutoIt v3 GUI", NTAU_TITLE, NTAU_SOJSOLD, realm + "|" + ip);
+	if( !sent )
+	{
+		DebugInOOG("NTAU_SendSoj() failed.");
+	}
+	return sent;
+}
+
+function NTAU_UpdateWindowTitle(string)
+{
+	var sent = SendCopyData("AutoIt v3 GUI", NTAU_TITLE, NTAU_GAMETITLE, string);
+	if( !sent )
+	{
+		DebugInOOG("NTAU_UpdateWindowTitle() failed.");
+	}
+	return sent;
+}
+
+function NTAU_AnchorWindow(anchor) {
+	var whichAnchor = NTAU_WINDOW_ANCHORS[anchor];
+	if (!whichAnchor) whichAnchor = 0;
+	return NTAU_SendToAu3ext(NTAU_ANCHOR_WINDOW, whichAnchor);
+}
+
+function NTAU_MoveWindow(x, y) {
+	return NTAU_SendToAu3ext(NTAU_MOVE_WINDOW, x + "," + y);
+}

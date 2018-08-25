@@ -1,0 +1,544 @@
+var Stats = {
+	strength: [219, 153],
+	dexterity: [219, 214],
+	vitality: [219, 301],
+	energy: [219, 361],
+
+	addStat: function (which, count) {
+		var i, spot1, spot2;
+
+		if (which === undefined) {
+			return SendCopyData("D2NT Manager", null, (9 << 16) | 0, "Did not specify which stat to add!");
+		}
+
+		if (this.hasOwnProperty(which) !== -1) {
+			spot1 = this[which][0];
+			spot2 = this[which][1];
+		}
+
+		NTAU_Send("c");
+
+		for (i = 0; i < count; i += 1) {
+			NTAU_Click(NTAU_LEFT, spot1, spot2);
+			Delay(200);
+		}
+
+		NTAU_Send("c");
+		// TODO add char config for unused stats points the user wants to save, and base return on me.GetStat(4) which returns unused stats
+		return;
+	}
+};
+
+var Skills = {
+	tab1: [672, 220],
+	tab2: [672, 325],
+	tab3: [672, 430],
+
+	// Skills based on what tab they are in
+	one: [
+		"jab",
+		"powerstrike",
+		"poisonjavalin",
+		"impale",
+		"lightningbolt",
+		"chargedstrike",
+		"plaguejavalin",
+		"fend",
+		"lightningstrike",
+		"lightningfury",
+		"tigerstrike",
+		"dragontalon",
+		"fistsoffire",
+		"dragonclaw",
+		"cobrastrike",
+		"clawsofthunder",
+		"dragontail",
+		"bladesofice",
+		"dragonflight",
+		"pheonixstrike",
+		"howl",
+		"findpotion",
+		"taunt",
+		"shout",
+		"finditem",
+		"battlecry",
+		"battleorders",
+		"grimward",
+		"warcry",
+		"battlecommand",
+		"firestorm",
+		"moltenboulder",
+		"arcticblast",
+		"fissure",
+		"cyclonearmor",
+		"twister",
+		"volcano",
+		"tornado",
+		"armaggedon",
+		"hurricane",
+		"skeletonmastery",
+		"raiseskeleton",
+		"claygolem",
+		"golemmastery",
+		"raiseskeletalmage",
+		"bloodgolem",
+		"summonresist",
+		"irongolem",
+		"firegolem",
+		"revive",
+		"prayer",
+		"resistfire",
+		"defiance",
+		"resistcold",
+		"cleansing",
+		"resistlightning",
+		"vigor",
+		"meditation",
+		"redemption",
+		"salvation",
+		"icebolt",
+		"frozenarmor",
+		"frostnova",
+		"iceblast",
+		"shiverarmor",
+		"glacialspike",
+		"blizzard",
+		"chillingarmor",
+		"frozenorb",
+		"coldmastery"],
+
+	two: [
+		"innersight",
+		"criticalstrike",
+		"dodge",
+		"slowmissiles",
+		"avoid",
+		"penetrate",
+		"decoy",
+		"evade",
+		"valkyrie",
+		"pierce",
+		"clawmastery",
+		"psychichammer",
+		"burstofspeed",
+		"weaponblock",
+		"cloakofshadows",
+		"fade",
+		"shadowwarrior",
+		"mindblast",
+		"venom",
+		"shadowmaster",
+		"swordmastery",
+		"axemastery",
+		"macemastery",
+		"polearmmastery",
+		"throwingmastery",
+		"spearmastery",
+		"increasedstamina",
+		"ironskin",
+		"increasedspeed",
+		"naturalresistence",
+		"werewolf",
+		"lycanthropy",
+		"werebear",
+		"feralrage",
+		"maul",
+		"rabies",
+		"fireclaws",
+		"hunger",
+		"shockwave",
+		"fury",
+		"teeth",
+		"bonearmor",
+		"poisondagger",
+		"corpseexplosion",
+		"bonewall",
+		"poisonexplosion",
+		"bonespear",
+		"boneprison",
+		"poisonnova",
+		"bonespirit",
+		"might",
+		"holyfire",
+		"thorns",
+		"blessedaim",
+		"concentration",
+		"holyfreeze",
+		"holyshock",
+		"sanctuary",
+		"fanaticism",
+		"conviction",
+		"chargedbolt",
+		"staticfield",
+		"telekinesis",
+		"nova",
+		"lightning",
+		"chainlightning",
+		"teleport",
+		"thunderstorm",
+		"energyshield",
+		"lightningmastery"],
+
+	three: [
+		"magicarrow",
+		"firearrow",
+		"coldarrow",
+		"multipleshot",
+		"explodingarrow",
+		"icearrow",
+		"guidedarrow",
+		"strafe",
+		"immolationarrow",
+		"freezingarrow",
+		"fireblast",
+		"shockweb",
+		"bladesentinel",
+		"chargedboltsentry",
+		"wakeoffire",
+		"bladefury",
+		"lightningsentry",
+		"wakeofinferno",
+		"deathsentry",
+		"bladeshield",
+		"bash",
+		"leap",
+		"doubleswing",
+		"stun",
+		"doublethrow",
+		"leapattack",
+		"concentrate",
+		"frenzy",
+		"whirlwind",
+		"berserk",
+		"raven",
+		"poisoncreeper",
+		"oaksage",
+		"summonspiritwolf",
+		"carrionvine",
+		"heartofwolverine",
+		"summondirewolf",
+		"solarcreeper",
+		"spiritofbarbs",
+		"summongrizzly",
+		"amplifydamage",
+		"dimvision",
+		"weaken",
+		"ironmaiden",
+		"terror",
+		"confuse",
+		"lifetap",
+		"attract",
+		"decrepify",
+		"lowerresist",
+		"sacrifice",
+		"smite",
+		"holybolt",
+		"zeal",
+		"charge",
+		"vengeance",
+		"blessedhammer",
+		"conversion",
+		"holyshield",
+		"fistoftheheavens",
+		"firebolt",
+		"warmth",
+		"inferno",
+		"blaze",
+		"fireball",
+		"firewall",
+		"enchant",
+		"meteor",
+		"firemastery",
+		"hydra"],
+
+// Location info for skill buttons
+// Amazon Skills
+	// Javalin and Spear
+	jab: [437, 98],
+	powerstrike: [507, 165],
+	poisonjavalin: [580, 165],
+	impale: [440, 237],
+	lightningbolt: [579, 237],
+	chargedstrike: [508, 301],
+	plaguejavalin: [575, 301],
+	fend: [439, 372],
+	lightningstrike: [508, 440],
+	lightningfury: [578, 440],
+
+	// Passive and Magic
+	innersight: [437, 98],
+	criticalstrike: [578, 102],
+	dodge: [506, 166],
+	slowmissiles: [442, 235],
+	avoid: [509, 235],
+	penetrate: [579, 305],
+	decoy: [442, 369],
+	evade: [508, 371],
+	valkyrie: [440, 440],
+	pierce: [578, 440],
+
+	// Bow and Crossbow
+	magicarrow: [509, 100],
+	firearrow: [580, 100],
+	coldarrow: [440, 166],
+	multipleshot: [509, 166],
+	explodingarrow: [580, 234],
+	icearrow: [440, 303],
+	guidedarrow: [506, 303],
+	strafe: [506, 371],
+	immolationarrow: [575, 371],
+	freezingarrow: [440, 440],
+
+// Assassin Skills
+	// Martial Arts
+	tigerstrike: [510, 100],
+	dragontalon: [577, 100],
+	fistsoffire: [440, 168],
+	dragonclaw: [577, 168],
+	cobrastrike: [507, 235],
+	clawsofthunder: [440, 300],
+	dragontail: [577, 300],
+	bladesofice: [440, 372],
+	dragonflight: [580, 372],
+	pheonixstrike: [510, 440],
+
+	// Shadow Disciplines
+	clawmastery: [510, 100],
+	psychichammer: [577, 100],
+	burstofspeed: [440, 166],
+	weaponblock: [510, 236],
+	cloakofshadows: [575, 236],
+	fade: [440, 300],
+	shadowwarrior: [505, 300],
+	mindblast: [577, 372],
+	venom: [440, 440],
+	shadowmaster: [510, 440],
+
+	// Traps
+	fireblast: [510, 100],
+	shockweb: [440, 168],
+	bladesentinel: [577, 168],
+	chargedboltsentry: [440, 231],
+	wakeoffire: [510, 231],
+	bladefury: [577, 303],
+	lightningsentry: [440, 372],
+	wakeofinferno: [510, 372],
+	deathsentry: [440, 440],
+	bladeshield: [577, 440],
+
+// Barbarian Skills
+	// WarCries
+	howl: [440, 100],
+	findpotion: [580, 100],
+	taunt: [440, 167],
+	shout: [510, 167],
+	finditem: [577, 236],
+	battlecry: [440, 300],
+	battleorders: [510, 372],
+	grimward: [577, 372],
+	warcry: [440, 440],
+	battlecommand: [508, 440],
+
+	// Combat Masteries
+	swordmastery: [440, 100],
+	axemastery: [507, 100],
+	macemastery: [580, 100],
+	polearmmastery: [440, 167],
+	throwingmastery: [508, 167],
+	spearmastery: [577, 167],
+	increasedstamina: [440, 236],
+	ironskin: [577, 303],
+	increasedspeed: [440, 372],
+	naturalresistence: [580, 440],
+
+	// Combat Skills
+	bash: [510, 100],
+	leap: [440, 168],
+	doubleswing: [577, 168],
+	stun: [510, 236],
+	doublethrow: [577, 236],
+	leapattack: [440, 305],
+	concentrate: [510, 306],
+	frenzy: [577, 375],
+	whirlwind: [440, 440],
+	berserk: [510, 440],
+
+// Druid Skills
+	// Elemental Skills
+	firestorm: [440, 100],
+	moltenboulder: [440, 166],
+	arcticblast: [577, 166],
+	fissure: [440, 236],
+	cyclonearmor: [577, 236],
+	twister: [510, 305],
+	volcano: [440, 372],
+	tornado: [505, 372],
+	armaggedon: [440, 440],
+	hurricane: [510, 440],
+
+	// Shape Shifting
+	werewolf: [440, 100],
+	lycanthropy: [510, 100],
+	werebear: [577, 166],
+	feralrage: [440, 235],
+	maul: [577, 236],
+	rabies: [440, 303],
+	fireclaws: [510, 303],
+	hunger: [510, 370],
+	shockwave: [577, 370],
+	fury: [440, 440],
+
+	// Summoning Skills
+	raven: [510, 100],
+	poisoncreeper: [577, 100],
+	oaksage: [440, 168],
+	summonspiritwolf: [510, 168],
+	carrionvine: [577, 236],
+	heartofwolverine: [440, 303],
+	summondirewolf: [510, 303],
+	solarcreeper: [577, 374],
+	spiritofbarbs: [440, 440],
+	summongrizzly: [510, 440],
+
+// Necromancer Skills
+	// Summoning Spells
+	skeletonmastery: [440, 100],
+	raiseskeleton: [577, 100],
+	claygolem: [510, 168],
+	golemmastery: [440, 236],
+	raiseskeletalmage: [577, 236],
+	bloodgolem: [510, 304],
+	summonresist: [440, 372],
+	irongolem: [510, 372],
+	firegolem: [510, 440],
+	revive: [577, 440],
+
+	// Poison and Bone Spells
+	teeth: [510, 100],
+	bonearmor: [577, 100],
+	poisondagger: [440, 168],
+	corpseexplosion: [510, 168],
+	bonewall: [577, 236],
+	poisonexplosion: [440, 303],
+	bonespear: [510, 303],
+	boneprison: [577, 372],
+	poisonnova: [440, 440],
+	bonespirit: [510, 440],
+
+	// Curses
+	amplifydamage: [510, 100],
+	dimvision: [440, 168],
+	weaken: [577, 168],
+	ironmaiden: [510, 236],
+	terror: [577, 236],
+	confuse: [440, 303],
+	lifetap: [510, 303],
+	attract: [440, 372],
+	decrepify: [577, 372],
+	lowerresist: [510, 440],
+
+// Paladin Skills
+	// Defensive Auras
+	prayer: [440, 100],
+	resistfire: [577, 100],
+	defiance: [510, 167],
+	resistcold: [577, 168],
+	cleansing: [440, 237],
+	resistlightning: [577, 237],
+	vigor: [510, 305],
+	meditation: [440, 372],
+	redemption: [510, 440],
+	salvation: [577, 440],
+
+	// Offensive Auras
+	might: [440, 100],
+	holyfire: [510, 168],
+	thorns: [577, 168],
+	blessedaim: [440, 236],
+	concentration: [440, 305],
+	holyfreeze: [510, 305],
+	holyshock: [510, 372],
+	sanctuary: [577, 372],
+	fanaticism: [440, 440],
+	conviction: [577, 440],
+
+	// Combat Skills
+	sacrifice: [440, 100],
+	smite: [577, 100],
+	holybolt: [510, 168],
+	zeal: [440, 236],
+	charge: [577, 236],
+	vengeance: [440, 305],
+	blessedhammer: [510, 305],
+	conversion: [440, 372],
+	holyshield: [577, 372],
+	fistoftheheavens: [510, 440],
+
+// Sorceress Skills
+	// Cold Spells
+	icebolt: [510, 100],
+	frozenarmor: [577, 100],
+	frostnova: [440, 168],
+	iceblast: [510, 168],
+	shiverarmor: [577, 236],
+	glacialspike: [510, 305],
+	blizzard: [440, 375],
+	chillingarmor: [577, 375],
+	frozenorb: [440, 440],
+	coldmastery: [510, 440],
+
+	// Lightning Spells
+	chargedbolt: [510, 100],
+	staticfield: [440, 167],
+	telekinesis: [577, 167],
+	nova: [440, 236],
+	lightning: [510, 236],
+	chainlightning: [510, 305],
+	teleport: [577, 305],
+	thunderstorm: [440, 375],
+	energyshield: [577, 375],
+	lightningmastery: [510, 440],
+
+	// Fire Spells
+	firebolt: [510, 100],
+	warmth: [577, 100],
+	inferno: [440, 168],
+	blaze: [440, 236],
+	fireball: [510, 236],
+	firewall: [440, 305],
+	enchant: [577, 305],
+	meteor: [510, 375],
+	firemastery: [510, 440],
+	hydra: [577, 440],
+
+	addSkill: function (which) {
+		var spot1, spot2;
+
+		if (which === undefined) {
+			return SendCopyData("D2NT Manager", null, (9 << 16) | 0, "Did not specify which skill to add!");
+		}
+
+		if (this.hasOwnProperty(which) !== -1) {
+			spot1 = this[which][0];
+			spot2 = this[which][1];
+		}
+
+		NTAU_Send("t");
+		Delay(200);
+
+		if (this.one.indexOf(which) !== -1) {
+			NTAU_Click(NTAU_LEFT, this.tab1[0], this.tab1[1]);
+		} else if (this.two.indexOf(which) !== -1) {
+			NTAU_Click(NTAU_LEFT, this.tab2[0], this.tab2[1]);
+		} else if (this.three.indexOf(which) !== -1) {
+			NTAU_Click(NTAU_LEFT, this.tab3[0], this.tab3[1]);
+		}
+
+		NTAU_Click(NTAU_LEFT, spot1, spot2);
+		Delay(200);
+
+		NTAU_Send("t");
+		// TODO add char config for unused skill points user wants to save. and base return off of me.GetStat(5)
+		return;
+	}
+};
